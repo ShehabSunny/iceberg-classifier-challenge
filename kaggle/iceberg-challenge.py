@@ -54,21 +54,25 @@ def process_data(data_path):
 
 # predict 
 def predict():
-    weight_path = "C:\\e\\dev\\iceberg-classifier-challenge\\project\\saved_models\\weights.best.improved.hdf5"
-    data_path = "C:\\e\\dev\\capstones\\data\\test\\test.json"
     model = get_model(weight_path)
     X_test = process_data(data_path)
     predicted_test=model.predict_proba(X_test)
     return predicted_test
 
 
-# load data
-data_path = "C:\\e\\dev\\capstones\\data\\test\\test.json"
-df = pd.read_json(data_path)
-prediction = predict()
+if __name__ == "__main__":
+    # data paths
+    data_path = "C:\\e\\dev\\capstones\\data\\test\\test.json"
+    weight_path = "C:\\e\\dev\\iceberg-classifier-challenge\\project\\saved_models\\weights.best.improved.hdf5"
+    submission_filename = "submission.txt"
 
-# write prediction to file
-filename = "submission.txt"
-file = open(filename, "a")
-for index, row in df.iterrows():
-   file.writelines(str(row['id'])+","+str(round(prediction[index][0],2))+"\n")
+    # load data
+    df = pd.read_json(data_path)
+    # predict
+    prediction = predict()
+
+    # write prediction to file
+    file = open(submission_filename, "a")
+    file.writelines("id,is_iceberg\n")
+    for index, row in df.iterrows():
+        file.writelines(str(row['id'])+","+str(round(prediction[index][0],2))+"\n")
